@@ -35,9 +35,12 @@ public class LoaderManager {
             loaders.put(id, loader);
         }
         if (loader.isAttached()) {
-            throw new IllegalStateException("Loader " + loader + " already has callbacks. Make sure you are using unique ids and that you are calling either detach() or destroy() when the Activity is destroyed.");
+            throw new IllegalStateException("Loader " + loader + " already has callbacks. Make sure you are using unique ids and the LoaderManager was properly detached.");
         }
         if (loaderCallbacks != null) {
+            if (loaderCallbacks.get(id) != null)  {
+                throw new IllegalStateException("Loader " + loader + " already has callbacks. Make sure you are using unique ids and the LoaderManager was properly detached.");
+            }
             loaderCallbacks.put(id, callbacks);
         } else {
             loader.setCallbacks(callbacks);

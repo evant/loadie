@@ -50,10 +50,57 @@ public class LoaderManagerTest {
     }
 
     @Test
+    public void start_before_init() {
+        Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
+        TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);
+        loaderManager.start();
+        loader.start();
+
+        verify(callbacks).onLoaderStart();
+        verifyNoMoreInteractions(callbacks);
+    }
+
+    @Test
+    public void start_after_init() {
+        Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
+        TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);
+        loader.start();
+        loaderManager.start();
+
+        verify(callbacks).onLoaderStart();
+        verifyNoMoreInteractions(callbacks);
+    }
+
+    @Test
+    public void stop() {
+        Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
+        TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);
+        loaderManager.start();
+        loaderManager.stop();
+        loader.start();
+
+        verifyNoMoreInteractions(callbacks);
+    }
+
+    @Test
+    public void stop_and_start() {
+        Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
+        TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);
+        loaderManager.start();
+        loaderManager.stop();
+        loader.start();
+        loaderManager.start();
+
+        verify(callbacks).onLoaderStart();
+        verifyNoMoreInteractions(callbacks);
+    }
+
+    @Test
     public void detach() {
         Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
         TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);
         loader.start();
+        loaderManager.start();
         loaderManager.detach();
         loader.result("test");
 
@@ -66,6 +113,7 @@ public class LoaderManagerTest {
         Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
         TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);
         loader.start();
+        loaderManager.start();
         loaderManager.destroy();
         loader.result("test");
 
@@ -80,10 +128,12 @@ public class LoaderManagerTest {
         Loader.Callbacks<String> callbacks2 = mock(Loader.Callbacks.class);
         TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks1);
         loader.start();
+        loaderManager.start();
         loaderManager.detach();
         loader.result("test");
 
         loader = loaderManager.init(0, TestLoader.<String>create(), callbacks2);
+        loaderManager.start();
 
         verify(callbacks1).onLoaderStart();
         verifyNoMoreInteractions(callbacks1);
@@ -95,6 +145,20 @@ public class LoaderManagerTest {
     public void attachTwice() {
         Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
         TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);
+
+        try {
+            loaderManager.init(0, TestLoader.<String>create(), null);
+            fail();
+        } catch (IllegalStateException e) {
+            // pass
+        }
+    }
+
+    @Test
+    public void attachTwiceAfterStart() {
+        Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
+        TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);
+        loaderManager.start();
 
         try {
             loaderManager.init(0, TestLoader.<String>create(), null);

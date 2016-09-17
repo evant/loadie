@@ -3,6 +3,8 @@ package me.tatarka.loadie;
 import android.app.Activity;
 import android.os.Bundle;
 
+import me.tatarka.loadie.sample.R;
+
 public class MainActivity extends Activity {
 
     LoaderManager loaderManager;
