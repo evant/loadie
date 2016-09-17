@@ -208,3 +208,22 @@ public class MainActivity extends Activity {
     }
 }
 ```
+
+## Testing Loaders
+
+You can test loaders synchronously with `LoaderTester` in `me.tatarka.loadie:loadie-test`.
+
+```java
+@Test
+public void my_loader_test() {
+    // Just wait for loader to complete.
+    LoaderTester.runSynchronously(new MyLoader());
+    // Get the first result.
+    String result = LoaderTester.getResultSynchronously(new MyLoader());
+    // Get all results.
+    Iterator<String> results = LoaderTester.getResultsSynchronously(new MyLoader());
+    String result1 = results.next();
+    String result2 = results.next();
+    String result3 = results.next();
+}
+```
