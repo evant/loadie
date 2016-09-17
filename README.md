@@ -13,6 +13,10 @@ Compare that to Android loader's 6.
 * Not tied into any component, you just need to call the 4 lifecycle methods on LoaderManager at the
 correct time, though default implementations for Activities and Fragments are provided.
 * Not coupled to content providers in any way, though there is a CursorLoader if you need that.
+* Loaders do not require a context.
+* Callback when the loader starts running so you can update your ui.
+* Explicit error handline with `onLoaderError()`.
+* Results are _always_ delivered async, so you don't have to guess when the callbacks are called vs your view setup logic.
 
 ## Download
 
