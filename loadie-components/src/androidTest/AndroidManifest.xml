@@ -1,0 +1,9 @@
+<manifest package="me.tatarka.loadie.components"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity android:name="me.tatarka.loadie.component.TestActivity" />
+        <activity android:name="me.tatarka.loadie.component.TestActivityWithFragment" />
+        <activity android:name="me.tatarka.loadie.component.TestActivityWithNestedFragment" />
+    </application>
+</manifest>
