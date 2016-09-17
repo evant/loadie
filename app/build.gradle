@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "me.tatarka.loadie"
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -20,10 +20,7 @@ android {
 }
 
 dependencies {
-    compile project(':loadie')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    compile project(':loadie-components')
+    compile project(':loadie-support')
     compile 'com.android.support:appcompat-v7:24.2.1'
-    testCompile 'junit:junit:4.12'
 }
