@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'signing'
 
 android {
     compileSdkVersion 24
@@ -27,3 +30,5 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.0.31-beta'
     testCompile "org.robolectric:robolectric:3.1.2"
 }
+
+apply from: '../publish.gradle'
