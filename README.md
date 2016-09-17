@@ -1,5 +1,6 @@
 Loadie
 ======
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.tatarka.loadie/loadie/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.tatarka.loadie/loadie)
 
 Loaders for the rest of us.
 
@@ -12,6 +13,23 @@ Compare that to Android loader's 6.
 * Not tied into any component, you just need to call the 4 lifecycle methods on LoaderManager at the
 correct time, though default implementations for Activities and Fragments are provided.
 * Not coupled to content providers in any way, though there is a CursorLoader if you need that.
+
+## Download
+
+```groovy
+// Base lib
+compile 'me.tatarka.loadie:loadie:0.1'
+// LoaderMangerProvider for Activity and Fragment
+compile 'me.tatarka.loadie:loadie-components:0.1'
+// LoaderManagerProvider for Conductor
+compile 'me.tatarka.loadie:loadie-conductor:0.1'
+// AsyncTaskLoader and CursorLoader
+compile 'me.tatarka.loadie:loadie-support:0.1'
+// RxLoader
+compile 'me.tatarka.loadie:loadie-rx:0.1'
+// LoaderTester
+androidTestCompile 'me.tatarka.loadie:loadie-test:0.1'
+```
 
 ## Creating a Loader
 
