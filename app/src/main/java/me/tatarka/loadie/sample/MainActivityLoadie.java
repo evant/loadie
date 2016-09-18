@@ -1,5 +1,6 @@
 package me.tatarka.loadie.sample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,18 +24,27 @@ import me.tatarka.loadie.component.LoaderManagerProvider;
  */
 public class MainActivityLoadie extends AppCompatActivity {
 
+    static final int LOADER1 = 0;
+    static final int LOADER2 = 1;
+    static final int LOADER3 = 2;
+    static final int LOADER4 = 3;
+
+    LoaderManager loaderManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LoaderManager loaderManager = LoaderManagerProvider.forActivity(this);
-
+        loaderManager = LoaderManagerProvider.forActivity(this);
         setContentView(R.layout.activity_main);
+        loader1();
+        loader2();
+        loader3();
+        loader4();
+    }
 
+    private void loader1() {
         final TextView loader1Text = (TextView) findViewById(R.id.loader1);
-        final TextView loader2Text = (TextView) findViewById(R.id.loader2);
-        final TextView loader3Text = (TextView) findViewById(R.id.loader3);
-
-        MyLoader loader1 = loaderManager.init(0, MyLoader.CREATE, new Loader.CallbacksAdapter<String>() {
+        MyLoader loader1 = loaderManager.init(LOADER1, MyLoader.CREATE, new Loader.CallbacksAdapter<String>() {
             @Override
             public void onLoaderStart() {
                 loader1Text.setText("Loading....");
@@ -45,7 +55,12 @@ public class MainActivityLoadie extends AppCompatActivity {
                 loader1Text.setText(result);
             }
         });
-        final MyLoader loader2 = loaderManager.init(1, MyLoader.CREATE, new Loader.CallbacksAdapter<String>() {
+        loader1.start();
+    }
+
+    private void loader2() {
+        final TextView loader2Text = (TextView) findViewById(R.id.loader2);
+        final MyLoader loader2 = loaderManager.init(LOADER2, MyLoader.CREATE, new Loader.CallbacksAdapter<String>() {
             @Override
             public void onLoaderStart() {
                 loader2Text.setText("Loading...");
@@ -56,7 +71,17 @@ public class MainActivityLoadie extends AppCompatActivity {
                 loader2Text.setText(result);
             }
         });
-        CurrentTimeLoader loader3 = loaderManager.init(2, CurrentTimeLoader.CREATE, new Loader.CallbacksAdapter<Long>() {
+        findViewById(R.id.loader2_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loader2.restart();
+            }
+        });
+    }
+
+    private void loader3() {
+        final TextView loader3Text = (TextView) findViewById(R.id.loader3);
+        CurrentTimeLoader loader3 = loaderManager.init(LOADER3, CurrentTimeLoader.CREATE, new Loader.CallbacksAdapter<Long>() {
             SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm:ss a", Locale.US);
 
             @Override
@@ -64,17 +89,34 @@ public class MainActivityLoadie extends AppCompatActivity {
                 loader3Text.setText(timeFormat.format(new Date(result)));
             }
         });
+        loader3.start();
+    }
 
-        loader1.start();
-
-        findViewById(R.id.loader2_button).setOnClickListener(new View.OnClickListener() {
+    private void loader4() {
+        final TextView loader4Text = (TextView) findViewById(R.id.loader4);
+        final MyArgLoader loader4 = loaderManager.init(LOADER4, MyArgLoader.CREATE, new Loader.CallbacksAdapter<String>() {
             @Override
-            public void onClick(View v) {
-                loader2.restart();
+            public void onLoaderStart() {
+                loader4Text.setText("Loading...");
+            }
+
+            @Override
+            public void onLoaderResult(String result) {
+                loader4Text.setText(result);
             }
         });
-
-        loader3.start();
+        findViewById(R.id.arg1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loader4.restart(1);
+            }
+        });
+        findViewById(R.id.arg2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loader4.restart(2);
+            }
+        });
     }
 
     public static class MyLoader extends AsyncTaskLoader<String> {
@@ -94,6 +136,34 @@ public class MainActivityLoadie extends AppCompatActivity {
                 return null;
             }
             return "complete";
+        }
+    }
+
+    public static class MyArgLoader extends AsyncTaskLoader<String> {
+        
+        public static Create<MyArgLoader> CREATE = new Create<MyArgLoader>() {
+            @Override
+            public MyArgLoader create() {
+                return new MyArgLoader();
+            }
+        };
+
+        private int arg;
+
+        @Override
+        protected String doInBackground() {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                return null;
+            }
+            return "complete " + arg;
+        }
+
+        public void restart(int arg) {
+            cancel();
+            this.arg = arg;
+            start();
         }
     }
 

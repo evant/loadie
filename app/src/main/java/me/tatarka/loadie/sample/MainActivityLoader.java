@@ -22,20 +22,29 @@ import java.util.TimerTask;
  */
 public class MainActivityLoader extends AppCompatActivity {
 
+    static final int LOADER1 = 0;
+    static final int LOADER2 = 1;
+    static final int LOADER3 = 2;
+    static final int LOADER4 = 3;
+
+    LoaderManager loaderManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final LoaderManager loaderManager = getSupportLoaderManager();
-
+        loaderManager = getSupportLoaderManager();
         setContentView(R.layout.activity_main);
+        loader1();
+        loader2();
+        loader3();
+        loader4();
+    }
 
+    private void loader1() {
         final TextView loader1Text = (TextView) findViewById(R.id.loader1);
-        final TextView loader2Text = (TextView) findViewById(R.id.loader2);
-        final TextView loader3Text = (TextView) findViewById(R.id.loader3);
-
         loader1Text.setText("Loading...");
-        boolean loader1Running = loaderManager.getLoader(0) != null;
-        MyLoader loader1 = (MyLoader) loaderManager.initLoader(0, null, new LoaderCallbacksAdapter<String>() {
+        boolean loader1Running = loaderManager.getLoader(LOADER1) != null;
+        MyLoader loader1 = (MyLoader) loaderManager.initLoader(LOADER1, null, new LoaderCallbacksAdapter<String>() {
             @Override
             public Loader<String> onCreateLoader(int id, Bundle args) {
                 return new MyLoader(MainActivityLoader.this);
@@ -49,8 +58,11 @@ public class MainActivityLoader extends AppCompatActivity {
         if (!loader1Running) {
             loader1.forceLoad();
         }
+    }
 
-        boolean loader2Running = loaderManager.getLoader(1) != null;
+    private void loader2() {
+        final TextView loader2Text = (TextView) findViewById(R.id.loader2);
+        boolean loader2Running = loaderManager.getLoader(LOADER2) != null;
         final LoaderCallbacksAdapter<String> loader2Callbacks = new LoaderCallbacksAdapter<String>() {
             @Override
             public Loader<String> onCreateLoader(int id, Bundle args) {
@@ -64,18 +76,20 @@ public class MainActivityLoader extends AppCompatActivity {
         };
         if (loader2Running) {
             loader2Text.setText("Loading...");
-            loaderManager.initLoader(1, null, loader2Callbacks);
+            loaderManager.initLoader(LOADER2, null, loader2Callbacks);
         }
-
         findViewById(R.id.loader2_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loader2Text.setText("Loading...");
-                loaderManager.restartLoader(1, null, loader2Callbacks).forceLoad();
+                loaderManager.restartLoader(LOADER2, null, loader2Callbacks).forceLoad();
             }
         });
+    }
 
-        loaderManager.initLoader(2, null, new LoaderCallbacksAdapter<Long>() {
+    private void loader3() {
+        final TextView loader3Text = (TextView) findViewById(R.id.loader3);
+        loaderManager.initLoader(LOADER3, null, new LoaderCallbacksAdapter<Long>() {
 
             SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm:ss a", Locale.US);
 
@@ -87,6 +101,44 @@ public class MainActivityLoader extends AppCompatActivity {
             @Override
             public void onLoadFinished(Loader<Long> loader, Long data) {
                 loader3Text.setText(timeFormat.format(new Date(data)));
+            }
+        });
+    }
+
+    private void loader4() {
+        final TextView loader4Text = (TextView) findViewById(R.id.loader4);
+        boolean loader4Running = loaderManager.getLoader(LOADER4) != null;
+        final LoaderCallbacksAdapter<String> loader4Callbacks = new LoaderCallbacksAdapter<String>() {
+            @Override
+            public Loader<String> onCreateLoader(int id, Bundle args) {
+                return new MyArgLoader(MainActivityLoader.this, args.getInt("arg"));
+            }
+
+            @Override
+            public void onLoadFinished(Loader<String> loader, String data) {
+                loader4Text.setText(data);
+            }
+        };
+        if (loader4Running) {
+            loader4Text.setText("Loading...");
+            loaderManager.initLoader(LOADER4, null, loader4Callbacks);
+        }
+        findViewById(R.id.arg1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loader4Text.setText("Loading...");
+                Bundle args = new Bundle();
+                args.putInt("arg", 1);
+                loaderManager.restartLoader(LOADER4, args, loader4Callbacks).forceLoad();
+            }
+        });
+        findViewById(R.id.arg2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loader4Text.setText("Loading...");
+                Bundle args = new Bundle();
+                args.putInt("arg", 2);
+                loaderManager.restartLoader(LOADER4, args, loader4Callbacks).forceLoad();
             }
         });
     }
@@ -106,6 +158,25 @@ public class MainActivityLoader extends AppCompatActivity {
                 return null;
             }
             return "complete";
+        }
+    }
+
+    public static class MyArgLoader extends AsyncTaskLoader<String> {
+        int arg;
+
+        public MyArgLoader(Context context, int arg) {
+            super(context);
+            this.arg = arg;
+        }
+
+        @Override
+        public String loadInBackground() {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                return null;
+            }
+            return "complete " + arg;
         }
     }
 
