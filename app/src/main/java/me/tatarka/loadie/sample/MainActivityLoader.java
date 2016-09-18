@@ -115,8 +115,11 @@ public class MainActivityLoader extends AppCompatActivity {
             }
         };
         MyArgLoader loader4 = (MyArgLoader) loaderManager.<String>getLoader(LOADER4);
-        if (loader4 != null && loader4.isLoading) {
-            loader4Text.setText("Loading...");
+        if (loader4 != null) {
+            loaderManager.initLoader(LOADER4, null, loader4Callbacks);
+            if (loader4.isLoading) {
+                loader4Text.setText("Loading...");
+            }
         }
 
         findViewById(R.id.arg1).setOnClickListener(new View.OnClickListener() {
