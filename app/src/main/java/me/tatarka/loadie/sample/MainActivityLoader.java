@@ -43,7 +43,6 @@ public class MainActivityLoader extends AppCompatActivity {
     private void loader1() {
         final TextView loader1Text = (TextView) findViewById(R.id.loader1);
         loader1Text.setText("Loading...");
-        boolean loader1Running = loaderManager.getLoader(LOADER1) != null;
         MyLoader loader1 = (MyLoader) loaderManager.initLoader(LOADER1, null, new LoaderCallbacksAdapter<String>() {
             @Override
             public Loader<String> onCreateLoader(int id, Bundle args) {
@@ -55,14 +54,11 @@ public class MainActivityLoader extends AppCompatActivity {
                 loader1Text.setText(data);
             }
         });
-        if (!loader1Running) {
-            loader1.forceLoad();
-        }
+        loader1.start();
     }
 
     private void loader2() {
         final TextView loader2Text = (TextView) findViewById(R.id.loader2);
-        boolean loader2Running = loaderManager.getLoader(LOADER2) != null;
         final LoaderCallbacksAdapter<String> loader2Callbacks = new LoaderCallbacksAdapter<String>() {
             @Override
             public Loader<String> onCreateLoader(int id, Bundle args) {
@@ -74,9 +70,9 @@ public class MainActivityLoader extends AppCompatActivity {
                 loader2Text.setText(data);
             }
         };
-        if (loader2Running) {
+        MyLoader loader2 = (MyLoader) loaderManager.initLoader(LOADER2, null, loader2Callbacks);
+        if (loader2.isLoading) {
             loader2Text.setText("Loading...");
-            loaderManager.initLoader(LOADER2, null, loader2Callbacks);
         }
         findViewById(R.id.loader2_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +103,6 @@ public class MainActivityLoader extends AppCompatActivity {
 
     private void loader4() {
         final TextView loader4Text = (TextView) findViewById(R.id.loader4);
-        boolean loader4Running = loaderManager.getLoader(LOADER4) != null;
         final LoaderCallbacksAdapter<String> loader4Callbacks = new LoaderCallbacksAdapter<String>() {
             @Override
             public Loader<String> onCreateLoader(int id, Bundle args) {
@@ -119,10 +114,11 @@ public class MainActivityLoader extends AppCompatActivity {
                 loader4Text.setText(data);
             }
         };
-        if (loader4Running) {
+        MyArgLoader loader4 = (MyArgLoader) loaderManager.<String>getLoader(LOADER4);
+        if (loader4 != null && loader4.isLoading) {
             loader4Text.setText("Loading...");
-            loaderManager.initLoader(LOADER4, null, loader4Callbacks);
         }
+
         findViewById(R.id.arg1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,8 +142,23 @@ public class MainActivityLoader extends AppCompatActivity {
     // This loader doesn't start until forceLoad() is called.
     public static class MyLoader extends AsyncTaskLoader<String> {
 
+        boolean isLoading;
+        boolean hasData;
+
         public MyLoader(Context context) {
             super(context);
+        }
+
+        public void start() {
+            if (!hasData) {
+                forceLoad();
+            }
+        }
+
+        @Override
+        public void forceLoad() {
+            isLoading = true;
+            super.forceLoad();
         }
 
         @Override
@@ -159,14 +170,35 @@ public class MainActivityLoader extends AppCompatActivity {
             }
             return "complete";
         }
+
+        @Override
+        public void deliverResult(String data) {
+            isLoading = false;
+            hasData = true;
+            super.deliverResult(data);
+        }
     }
 
     public static class MyArgLoader extends AsyncTaskLoader<String> {
+        boolean hasData;
+        boolean isLoading;
         int arg;
 
         public MyArgLoader(Context context, int arg) {
             super(context);
             this.arg = arg;
+        }
+
+        public void start() {
+            if (!hasData) {
+                forceLoad();
+            }
+        }
+
+        @Override
+        public void forceLoad() {
+            isLoading = true;
+            super.forceLoad();
         }
 
         @Override
@@ -177,6 +209,13 @@ public class MainActivityLoader extends AppCompatActivity {
                 return null;
             }
             return "complete " + arg;
+        }
+
+        @Override
+        public void deliverResult(String data) {
+            isLoading = false;
+            hasData = true;
+            super.deliverResult(data);
         }
     }
 
