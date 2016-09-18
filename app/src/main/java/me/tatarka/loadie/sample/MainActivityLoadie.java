@@ -122,7 +122,7 @@ public class MainActivityLoadie extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        loader3.start(null);
+        loader3.start();
     }
 
     @Override
