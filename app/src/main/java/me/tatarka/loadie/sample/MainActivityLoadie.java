@@ -30,6 +30,7 @@ public class MainActivityLoadie extends AppCompatActivity {
     static final int LOADER4 = 3;
 
     LoaderManager loaderManager;
+    CurrentTimeLoader loader3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class MainActivityLoadie extends AppCompatActivity {
 
     private void loader3() {
         final TextView loader3Text = (TextView) findViewById(R.id.loader3);
-        CurrentTimeLoader loader3 = loaderManager.init(LOADER3, CurrentTimeLoader.CREATE, new Loader.CallbacksAdapter<Long>() {
+        loader3 = loaderManager.init(LOADER3, CurrentTimeLoader.CREATE, new Loader.CallbacksAdapter<Long>() {
             SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm:ss a", Locale.US);
 
             @Override
@@ -89,7 +90,6 @@ public class MainActivityLoadie extends AppCompatActivity {
                 loader3Text.setText(timeFormat.format(new Date(result)));
             }
         });
-        loader3.start();
     }
 
     private void loader4() {
@@ -117,6 +117,20 @@ public class MainActivityLoadie extends AppCompatActivity {
                 loader4.restart(2);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loader3.start(null);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!isChangingConfigurations()) {
+            loader3.cancel();
+        }
     }
 
     public static class MyLoader extends AsyncTaskLoader<String> {
