@@ -7,13 +7,11 @@ Loaders for the rest of us.
 The concept of loaders in Android is pretty great: a way to do async work in a lifecycle-aware way.
 Unfortunately, the implementation is pretty bad. Loadie attempts to fix this in several ways:
 
-* Very simple loader interface, you only need to implement 1 method, or up to 3 if really necessary.
+* Very simple loader interface for implementing a loader, only 3 possible methods to override.
 Compare that to Android loader's 6.
 * A clear separation between creating loaders and starting them.
 * Not tied into any component, you just need to call the 4 lifecycle methods on LoaderManager at the
 correct time, though default implementations for Activities and Fragments are provided.
-* Not coupled to content providers in any way, though there is a CursorLoader if you need that.
-* Loaders do not require a context.
 * Callback when the loader starts running so you can update your ui.
 * Explicit error handline with `onLoaderError()`.
 * Results are _always_ delivered async, so you don't have to guess when the callbacks are called vs your view setup logic.
