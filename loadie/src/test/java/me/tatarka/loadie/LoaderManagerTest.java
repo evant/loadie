@@ -72,6 +72,17 @@ public class LoaderManagerTest {
     }
 
     @Test
+    public void start_after_init1() {
+        Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
+        TestLoader<String> loader = loaderManager.init(1, TestLoader.<String>create(), callbacks);
+        loader.start();
+        loaderManager.start();
+
+        verify(callbacks).onLoaderStart();
+        verifyNoMoreInteractions(callbacks);
+    }
+
+    @Test
     public void stop() {
         Loader.Callbacks<String> callbacks = mock(Loader.Callbacks.class);
         TestLoader<String> loader = loaderManager.init(0, TestLoader.<String>create(), callbacks);

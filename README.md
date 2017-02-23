@@ -20,17 +20,17 @@ correct time, though default implementations for Activities and Fragments are pr
 
 ```groovy
 // Base lib
-compile 'me.tatarka.loadie:loadie:0.1'
+compile 'me.tatarka.loadie:loadie:0.2'
 // LoaderMangerProvider for Activity and Fragment
-compile 'me.tatarka.loadie:loadie-components:0.1'
+compile 'me.tatarka.loadie:loadie-components:0.2'
 // LoaderManagerProvider for Conductor
-compile 'me.tatarka.loadie:loadie-conductor:0.1'
+compile 'me.tatarka.loadie:loadie-conductor:0.2'
 // AsyncTaskLoader and CursorLoader
-compile 'me.tatarka.loadie:loadie-support:0.1'
+compile 'me.tatarka.loadie:loadie-support:0.2'
 // RxLoader
-compile 'me.tatarka.loadie:loadie-rx:0.1'
+compile 'me.tatarka.loadie:loadie-rx:0.2'
 // LoaderTester
-androidTestCompile 'me.tatarka.loadie:loadie-test:0.1'
+androidTestCompile 'me.tatarka.loadie:loadie-test:0.2'
 ```
 
 ## Creating a Loader

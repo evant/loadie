@@ -74,7 +74,7 @@ public class LoaderManager {
             return;
         }
         for (int i = 0, size = loaders.size(); i < size; i++) {
-            Loader loader = loaders.get(i);
+            Loader loader = loaders.valueAt(i);
             if (loader != null) {
                 Loader.Callbacks<?> callbacks = this.loaderCallbacks.get(loaders.keyAt(i));
                 loader.setCallbacks(callbacks);
@@ -95,7 +95,7 @@ public class LoaderManager {
         }
         loaderCallbacks = new SparseArray<>(loaders.size());
         for (int i = 0, size = loaders.size(); i < size; i++) {
-            Loader<?> loader = loaders.get(i);
+            Loader<?> loader = loaders.valueAt(i);
             if (loader != null) {
                 loaderCallbacks.put(loaders.keyAt(i), loader.getCallbacks());
                 loader.setCallbacks(null);
@@ -111,7 +111,7 @@ public class LoaderManager {
     public void detach() {
         loaderCallbacks = new SparseArray<>(loaders.size());
         for (int i = 0, size = loaders.size(); i < size; i++) {
-            Loader<?> loader = loaders.get(i);
+            Loader<?> loader = loaders.valueAt(i);
             if (loader != null) {
                 loader.setCallbacks(null);
             }
@@ -126,7 +126,7 @@ public class LoaderManager {
     public void destroy() {
         loaderCallbacks = null;
         for (int i = 0, size = loaders.size(); i < size; i++) {
-            Loader<?> loader = loaders.get(i);
+            Loader<?> loader = loaders.valueAt(i);
             if (loader != null) {
                 loader.destroy();
             }
